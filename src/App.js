@@ -5,41 +5,49 @@ const noBullets = {
   listStyleType: "none"
 }
 
-
-
-
 const Search = () => {
+  const [searchTerm, setSearchTerm] = React.useState('');
+
   const handleChange = (event) => {
-    // synthetic event
-    console.log(event);
-    // value of target (here: input HTML element)
-    console.log(event.target.value);
+    setSearchTerm(event.target.value);
+
   };
   return (
     <div>
-      <label htmlFor="search">Pick a book: </label>
-      <input id="search" type="text" onChange={handleChange} />
+      <div>
+        <label htmlFor="search">Pick a book: </label>
+        <input id="search" type="text" onChange={handleChange} />
+      </div>
+      <p>
+        Searching for <strong>{searchTerm}</strong>
+      </p>
     </div>
   );
 }
 
-const List = (props) => (
-  <ul style={noBullets}>
-    {props.list.map((item) => (
-      <ListItem key={item.objectID} item={item} />
-    ))
-    }
-  </ul>
-)
+function List(props) {
+  console.log('List renders');
+  return (
+    <div>
+      <ul style={noBullets}>
+        {props.list.map((item) => (
+          <ListItem key={item.objectID} item={item} />
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 function ListItem(props) {
+  let arrayKey = props.item.objectID;
 
+  console.log('List Item renders:', arrayKey);
   return (
-    <li key={props.key}>
+    <li>
       <span >
         <a href={props.item.url}>{props.item.title}</a>
       </span>
-      <span style={{ color: "green" }}>{props.item.author}</span>
+      <span style={{ color: "yellow" }}>{props.item.author}</span>
       <span>{props.item.num_comments}</span>
       <span>{props.item.points}</span>
     </li>
@@ -66,6 +74,7 @@ function App() {
       objectID: 1,
     },
   ];
+  console.log('App renders');
 
   return (
     <div>
@@ -75,8 +84,7 @@ function App() {
       <hr />
 
       <List list={stories} />
-
-    </div >
+    </div>
   );
 }
 
