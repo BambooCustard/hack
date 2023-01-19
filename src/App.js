@@ -5,32 +5,29 @@ const noBullets = {
   listStyleType: "none"
 }
 
-const Search = () => {
-  const [searchTerm, setSearchTerm] = React.useState('');
-
-  const handleChange = (event) => {
-    setSearchTerm(event.target.value);
-
-  };
-  return (
+const Search = ({ search, onSearch }) => (
+  <div>
     <div>
-      <div>
-        <label htmlFor="search">Pick a book: </label>
-        <input id="search" type="text" onChange={handleChange} />
-      </div>
-      <p>
-        Searching for <strong>{searchTerm}</strong>
-      </p>
+      <label htmlFor="search">Pick a book: </label>
+      <input
+        id="search"
+        type="text"
+        value={search}
+        onChange={onSearch} />
     </div>
-  );
-}
+    <p>
+      Searching for <strong>{search}</strong>
+    </p>
+  </div>
+);
 
-function List(props) {
+
+function List({ list }) {
   console.log('List renders');
   return (
     <div>
-      <ul style={noBullets}>
-        {props.list.map((item) => (
+      <ul style={noBullets} >
+        {list.map((item) => (
           <ListItem key={item.objectID} item={item} />
         ))}
       </ul>
@@ -38,18 +35,26 @@ function List(props) {
   );
 }
 
-function ListItem(props) {
-  let arrayKey = props.item.objectID;
+function ListItem({
+  item: {
+    objectID,
+    title,
+    url,
+    author,
+    num_comments,
+    points,
+  },
+}) {
 
-  console.log('List Item renders:', arrayKey);
+  console.log('List Item renders:', objectID);
   return (
     <li>
       <span >
-        <a href={props.item.url}>{props.item.title}</a>
+        <a href={url}>{title}</a>
       </span>
-      <span style={{ color: "yellow" }}>{props.item.author}</span>
-      <span>{props.item.num_comments}</span>
-      <span>{props.item.points}</span>
+      <span style={{ color: "yellow" }}>{author}</span>
+      <span>{num_comments}</span>
+      <span>{points}</span>
     </li>
   );
 }
@@ -75,15 +80,26 @@ function App() {
     },
   ];
   console.log('App renders');
+  const [searchTerm, setSearchTerm] = React.useState('x');
+
+  const handleChange = (event) => {
+    setSearchTerm(event.target.value);
+
+  };
+
+  const searchedStories = stories.filter(function (story) {
+    return story.title.includes(searchTerm);
+  });
+
 
   return (
     <div>
       <h1>Books R US</h1>
-      <Search />
+      <Search search={searchTerm} onSearch={handleChange} />
 
       <hr />
 
-      <List list={stories} />
+      <List list={searchedStories} />
     </div>
   );
 }
